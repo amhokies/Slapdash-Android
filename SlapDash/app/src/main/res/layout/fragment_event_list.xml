@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.virginiatech.slapdash.slapdash.EventList_Fragment.EventListFragment"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:id="@+id/event_list">
+        <Button
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Select an Event"
+        android:id="@+id/btnEvent"
+        android:gravity="center"
+        android:textSize="40dp"
+        android:layout_gravity="center_horizontal|top"
+        android:clickable="false"/>
+
+    <Button
+        android:text="Sync Events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/syncEventsButton" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/friend_list_view"
+        android:layout_gravity="center_horizontal|bottom"
+        android:paddingBottom="50dp">
+    </ListView>
+</LinearLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <TextView
+        android:text="Title"
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="italic"/>
+
+    <TextView
+        android:text="Description"
+        android:id="@+id/descTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:text="Slapper"
+        android:id="@+id/adminTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/starttimeTv"
+        android:text="StartTime"
+        android:layout_below="@+id/textView3"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:src="@drawable/burger_480"
+        android:layout_height="200dp"
+        android:id="@+id/categoryIv"
+        android:maxHeight="300dp"
+        android:maxWidth="240dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:text="Decline"
+        android:background="@drawable/button_rounded_decline"
+        android:id="@+id/declineBtn"
+        android:layout_marginBottom="17dp"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:text="Accept"
+        android:background="@drawable/button_rounded_accept"
+        android:id="@+id/acceptBtn"
+        android:layout_marginBottom="15dp"
+        android:textSize="30dp"
+        android:textStyle="italic"
+        android:layout_gravity="center_horizontal"/>
+
+
+</LinearLayout>

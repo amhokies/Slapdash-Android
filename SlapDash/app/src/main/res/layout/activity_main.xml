@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
@@ -7,38 +8,126 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.virginiatech.slapdash.slapdash.MainActivity">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="1"
+                android:text="Title"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </android.support.v7.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main_activity_container">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:sothree="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/sliding_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                sothree:umanoPanelHeight="0dp"
+                sothree:umanoShadowHeight="0dp"
+                sothree:umanoParallaxOffset="0dp"
+                sothree:umanoDragView="@+id/event_list"
+                sothree:umanoOverlay="true"
+                sothree:umanoScrollableView="@+id/friend_list_view">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+                <com.virginiatech.slapdash.slapdash.NonSwipeableViewPager
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:background="@color/colorPrimary"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:id="@+id/dragView"
+                    android:paddingBottom="40dp">
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        tools:context="com.virginiatech.slapdash.slapdash.EventList_Fragment.EventListFragment"
+                        android:orientation="vertical"
+                        android:id="@+id/event_list">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Select an Event"
+                            android:id="@+id/btnEvent"
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="30dp"
+                            android:textStyle="italic"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_gravity="left|top"
+                            android:clickable="false"
+                            android:paddingLeft="20dp"/>
+
+                        <ListView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/event_list_view"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:paddingBottom="40dp">
+                        </ListView>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="20dp"
+                android:paddingBottom="-25dp"
+                android:text=""
+                android:elevation="19dp"
+                android:id="@+id/justbutton"
+                android:layout_margin="50dp"
+                android:layout_gravity="center|bottom"
+                android:background="@drawable/event_list_bar"
+                android:layout_marginBottom="100dp"/>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:background="@color/colorPrimary"
+                android:elevation="20dp"
+                app:tabIndicatorColor="@android:color/transparent"/>
+        </FrameLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
+

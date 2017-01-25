@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <com.virginiatech.slapdash.slapdash.RoundedImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/friend_picture"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/facebook_friend_name"
+        android:text="FaceBookFriend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:layout_weight="0.6"
+        android:layout_gravity="center_vertical"/>
+
+    <Button
+        android:id="@+id/invite_friend"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center_vertical"
+        android:textColor="@android:color/holo_green_light"
+        android:text="invite"
+        android:background="@drawable/facebood_friend_invite_button"
+        android:typeface="sans"
+        android:layout_weight="0.4"
+        android:layout_margin="10dp"
+        />
+
+</LinearLayout>

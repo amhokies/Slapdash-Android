@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "859527362717",
+    "firebase_url": "https://slapdash-1475211305683.firebaseio.com",
+    "project_id": "slapdash-1475211305683",
+    "storage_bucket": "slapdash-1475211305683.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859527362717:android:931996f95c77ff10",
+        "android_client_info": {
+          "package_name": "com.virginiatech.slapdash.slapdash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859527362717-s1508jcvlm19d3k29phibhn6aq3mgmdg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.virginiatech.slapdash.slapdash",
+            "certificate_hash": "934A127D579290D4CDF3ED4ABE07B053A3623768"
+          }
+        },
+        {
+          "client_id": "859527362717-nff0ffmi0caa23vvief6bjjvlnpv6c00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT_4RkaoDN3cjlFIVYIxdj14XFcjUj7X4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859527362717-nff0ffmi0caa23vvief6bjjvlnpv6c00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
