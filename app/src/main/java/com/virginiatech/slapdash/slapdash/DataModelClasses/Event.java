@@ -1,7 +1,5 @@
 package com.virginiatech.slapdash.slapdash.DataModelClasses;
 
-import com.virginiatech.slapdash.slapdash.PermissionType;
-
 import java.util.ArrayList;
 import java.util.List;
 

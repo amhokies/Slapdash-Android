@@ -3,8 +3,8 @@ package com.virginiatech.slapdash.slapdash.EventCreationActivity;
 import android.app.Service;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,23 +15,22 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
-import com.virginiatech.slapdash.slapdash.DataModelClasses.UserLocation;
+import com.virginiatech.slapdash.slapdash.DataModelClasses.EventType;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
 import com.virginiatech.slapdash.slapdash.InvitingFriendList_Fragment.FbFriendFragment;
 import com.virginiatech.slapdash.slapdash.MainActivity;
-import com.virginiatech.slapdash.slapdash.Map_Fragment.EventType;
 import com.virginiatech.slapdash.slapdash.R;
 import com.virginiatech.slapdash.slapdash.Services.LocationService;
 import com.virginiatech.slapdash.slapdash.api.CreateEventRequest;
 import com.virginiatech.slapdash.slapdash.api.SlapDashAPI;
 import com.virginiatech.slapdash.slapdash.api.SlapDashAPIBuilder;
 
+import java.net.HttpURLConnection;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.net.HttpURLConnection;
-import java.util.Date;
-import android.os.Handler;
 
 public class EventCreationActivity extends AppCompatActivity implements
         FbFriendFragment.OnListFragmentInteractionListener,
@@ -107,15 +106,8 @@ public class EventCreationActivity extends AppCompatActivity implements
 
     @Override
     public void OnFbFriendFragmentCreated() {
-        Drawable newFabDrawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            newFabDrawable = getResources().getDrawable(R.drawable.event_create_done,
-                    this.getTheme());
-            fab.setImageDrawable(newFabDrawable);
-        } else {
-            newFabDrawable = getResources().getDrawable(R.drawable.event_create_done);
-            fab.setImageDrawable(newFabDrawable);
-        }
+        Drawable newFabDrawable = CompatibilityHelper.getDrawable(this, R.drawable.event_create_done);
+        fab.setImageDrawable(newFabDrawable);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

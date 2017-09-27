@@ -3,7 +3,6 @@ package com.virginiatech.slapdash.slapdash.EventDisplayFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +28,7 @@ import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
 import com.virginiatech.slapdash.slapdash.EventCreationActivity.EventCreationActivity;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
 import com.virginiatech.slapdash.slapdash.HelperClasses.UserIdToken;
 import com.virginiatech.slapdash.slapdash.MainActivity;
 import com.virginiatech.slapdash.slapdash.MainActivityFragmentsInterface;
@@ -268,13 +268,8 @@ public class EventDisplayFragment extends Fragment
             isActiveTextView.setText("Active");
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activeCheckMark.setCheckMarkDrawable(getResources()
-                    .getDrawable(activeCheckMarkedResource, getActivity().getTheme()));
-        } else {
-            activeCheckMark.setCheckMarkDrawable(getResources()
-                    .getDrawable(activeCheckMarkedResource));
-        }
+        activeCheckMark.setCheckMarkDrawable(
+                CompatibilityHelper.getDrawable(getActivity(), activeCheckMarkedResource));
         return true;
     }
 

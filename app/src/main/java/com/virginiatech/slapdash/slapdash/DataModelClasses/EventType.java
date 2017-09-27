@@ -1,4 +1,4 @@
-package com.virginiatech.slapdash.slapdash.Map_Fragment;
+package com.virginiatech.slapdash.slapdash.DataModelClasses;
 
 /**
  * Created by nima on 10/3/16.

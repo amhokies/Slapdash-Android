@@ -1,18 +1,11 @@
 package com.virginiatech.slapdash.slapdash.EventRespondActivity;
 
-import android.Manifest;
-import android.location.Location;
-import android.location.LocationManager;
-import android.location.Criteria;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,16 +16,16 @@ import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
-import com.virginiatech.slapdash.slapdash.MainActivity;
-import com.virginiatech.slapdash.slapdash.R;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.UserLocation;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
+import com.virginiatech.slapdash.slapdash.R;
+import com.virginiatech.slapdash.slapdash.Services.LocationService;
 import com.virginiatech.slapdash.slapdash.api.EventInvitationRequest;
 import com.virginiatech.slapdash.slapdash.api.SlapDashAPI;
 import com.virginiatech.slapdash.slapdash.api.SlapDashAPIBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,27 +52,21 @@ public class EventInvitationActivity extends AppCompatActivity {
             Object temp;
             if ((temp = recievedIntent.getStringExtra("eventid")) != null) {
                 eventIdTemp = (String) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
             if ((temp = recievedIntent.getStringExtra("title")) != null) {
                 title = (String) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
             if ((temp = recievedIntent.getStringExtra("description")) != null) {
                 description = (String) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
             if ((temp = recievedIntent.getStringExtra("admin")) != null) {
                 admin = (String) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
-            if ((long)(temp = recievedIntent.getLongExtra("starttimeLong", 0)) > 0) {
+            if ((long) (temp = recievedIntent.getLongExtra("starttimeLong", 0)) > 0) {
                 starttimelong = (long) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
             if ((temp = recievedIntent.getStringExtra("category")) != null) {
                 category = (String) temp;
-                Log.d(MainActivity.DEBUG, temp.toString());
             }
         }
 
@@ -91,13 +78,13 @@ public class EventInvitationActivity extends AppCompatActivity {
         acceptBtn = (Button) findViewById(R.id.acceptBtn);
         declineBtn = (Button) findViewById(R.id.declineBtn);
 
-        if(titleTv != null) {
+        if (titleTv != null) {
             titleTv.setText(title);
         }
-        if(descTv != null) {
+        if (descTv != null) {
             descTv.setText(description);
         }
-        if(adminTv != null) {
+        if (adminTv != null) {
             adminTv.setText("Slapper: " + admin);
         }
         if (starttimelong > 0 && startTimeTv != null) {
@@ -111,7 +98,7 @@ public class EventInvitationActivity extends AppCompatActivity {
         }
 
         final String eventId = eventIdTemp;
-        if(acceptBtn != null){
+        if (acceptBtn != null) {
             acceptBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -120,7 +107,7 @@ public class EventInvitationActivity extends AppCompatActivity {
             });
         }
 
-        if(declineBtn != null){
+        if (declineBtn != null) {
             declineBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -129,9 +116,8 @@ public class EventInvitationActivity extends AppCompatActivity {
             });
         }
 
-        if(!FacebookSdk.isInitialized()){
+        if (!FacebookSdk.isInitialized()) {
             FacebookSdk.sdkInitialize(getApplicationContext());
-            AppEventsLogger.activateApp(getApplication());
         }
     }
 
@@ -141,7 +127,6 @@ public class EventInvitationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Nullable
     private Drawable getCategoryDrawable(String category) {
         int categroyPictureId;
         switch (category) {
@@ -164,64 +149,48 @@ public class EventInvitationActivity extends AppCompatActivity {
 
         Drawable toReturn = null;
         if (categroyPictureId > 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                toReturn = getResources().getDrawable(categroyPictureId, getTheme());
-            } else {
-                toReturn = getResources().getDrawable(categroyPictureId);
-            }
+            toReturn = CompatibilityHelper.getDrawable(this, categroyPictureId);
         }
         return toReturn;
     }
 
+    //---------------------------------------------------------------------------------------
     private void respondToInvitationAsync(String eventId, final boolean accept) {
         final EventRespondWait_Fragment wait = new EventRespondWait_Fragment();
         Bundle respondBundle = new Bundle();
         respondBundle.putString("eventid", eventId);
         wait.setArguments(respondBundle);
-        wait.show(getFragmentManager() ,"RESPOND_WAIT");
-        SlapDashAPI service = SlapDashAPIBuilder.getAPI();
-        Call<Event> call = service.respondToEvent(
-                AccessToken.getCurrentAccessToken().getToken(),
-                new EventInvitationRequest(eventId, accept, getRecentLocation()));
+        wait.show(getFragmentManager(), "RESPOND_WAIT");
 
+        // Create the body of request
+        LocationManager locationManager = (LocationManager)
+                this.getSystemService(Context.LOCATION_SERVICE);
+        UserLocation userLocation = LocationService.getRecentLocation(this, locationManager);
+        EventInvitationRequest req = new EventInvitationRequest(eventId, accept, userLocation);
+
+        // Get the Facebook AccessToken
+        String accessToken = AccessToken.getCurrentAccessToken().getToken();
+
+        // Call the Api
+        SlapDashAPI service = SlapDashAPIBuilder.getAPI();
+        Call<Event> call = service.respondToEvent(accessToken, req);
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
-                if(response.isSuccessful()){
-                    Log.d(MainActivity.DEBUG,"Successful Responce to invitation");
+                if (response.isSuccessful()) {
                     wait.SucceededToRespond(accept);
                 } else {
                     Toast.makeText(getApplicationContext(), "Couldn't respond to event",
-                            Toast.LENGTH_SHORT);
+                            Toast.LENGTH_SHORT).show();
                 }
-
-                Log.d(MainActivity.DEBUG, "Respond from invitationRespond API was " +
-                        response.code());
             }
 
             @Override
             public void onFailure(Call<Event> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Something went wrong when responding to event",
-                        Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "Something went wrong!",
+                        Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
         });
-
-    }
-
-    private UserLocation getRecentLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String bestProvider = locationManager.getBestProvider(criteria, true);
-            if (bestProvider != null) {
-                Location location = locationManager.getLastKnownLocation(bestProvider);
-                if (location != null) {
-                    return new UserLocation(location.getLatitude(), location.getLongitude());
-                }
-            }
-        }
-        return null;
     }
 }

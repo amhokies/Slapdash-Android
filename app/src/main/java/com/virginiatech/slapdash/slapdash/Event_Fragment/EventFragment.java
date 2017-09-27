@@ -1,20 +1,14 @@
 package com.virginiatech.slapdash.slapdash.Event_Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import com.virginiatech.slapdash.slapdash.EventCreationActivity.EventCreationActivity;
-import com.virginiatech.slapdash.slapdash.MainActivity;
-import com.virginiatech.slapdash.slapdash.Map_Fragment.EventType;
+import com.virginiatech.slapdash.slapdash.DataModelClasses.EventType;
 import com.virginiatech.slapdash.slapdash.R;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class EventFragment extends Fragment {
     private EventType currentType;

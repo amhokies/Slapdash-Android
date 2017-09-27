@@ -11,6 +11,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -25,11 +26,20 @@ import com.facebook.Profile;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.User;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.UserLocation;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
 import com.virginiatech.slapdash.slapdash.MainActivity;
 import com.virginiatech.slapdash.slapdash.MainActivityFragmentsInterface;
 import com.virginiatech.slapdash.slapdash.R;
@@ -38,9 +48,9 @@ import com.virginiatech.slapdash.slapdash.RetainedFragments.MainEventRetainedFra
 
 public class MapFragment extends Fragment implements android.location.LocationListener,
         MainActivityFragmentsInterface {
-    //==============================================================================================
-    //----------------------------------------FIELDS------------------------------------------------
-    //==============================================================================================
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                 Private Members                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
     private OnMapFragmentInteractionListener mListener;
     private FloatingActionButton directionFab;
     private String directionAddr = "http://maps.google.com/maps?saddr=0,0&daddr=0,0";
@@ -55,12 +65,10 @@ public class MapFragment extends Fragment implements android.location.LocationLi
     private MapFragment self;
     private BitmapDescriptor markerIcon;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                       Overrides                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
-    //==============================================================================================
-    //--------------------------------------METHODS-------------------------------------------------
-    //==============================================================================================
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~OVERRIDES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +90,6 @@ public class MapFragment extends Fragment implements android.location.LocationLi
         }
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
-
             @Override
             public void onMapReady(GoogleMap newGoogleMap) {
                 googleMap = newGoogleMap;
@@ -90,27 +97,30 @@ public class MapFragment extends Fragment implements android.location.LocationLi
             }
         });
 
-        directionFab = (FloatingActionButton) v.findViewById(R.id.directionFab);
-        directionFab.setOnTouchListener(new View.OnTouchListener()
-            {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse(directionAddr));
-                        startActivity(intent);
-                        return true;
-                    }
+
+        // Create a custom listener for the direction fab on the map
+        View.OnTouchListener dfabCustomListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse(directionAddr));
+                    startActivity(intent);
                     return true;
                 }
+                return true;
             }
-        );
+        };
+
+        directionFab = (FloatingActionButton) v.findViewById(R.id.directionFab);
+        directionFab.setOnTouchListener(dfabCustomListener);
+
         // Perform any camera updates here
         return v;
     }
+
     //----------------------------------------------------------------------------------------------
-    public void changeStartDirectionString(double lat, double lng)
-    {
+    public void changeStartDirectionString(double lat, double lng) {
         String postStartString = directionAddr.substring(directionAddr.indexOf('&'));
         String finalStr = "http://maps.google.com/maps?saddr=".concat(String.valueOf(lat))
                 .concat(",").concat(String.valueOf(String.valueOf(lng)));
@@ -118,12 +128,10 @@ public class MapFragment extends Fragment implements android.location.LocationLi
     }
 
     //----------------------------------------------------------------------------------------------
-    public void changeDestDirectionString(double lat, double lng)
-    {
+    public void changeDestDirectionString(double lat, double lng) {
         String preStartString = directionAddr.substring(0, directionAddr.lastIndexOf('=') + 1);
-        String finalStr = preStartString.concat(String.valueOf(lat)).concat(",")
+        directionAddr = preStartString.concat(String.valueOf(lat)).concat(",")
                 .concat(String.valueOf(lng));
-        directionAddr = finalStr;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -132,6 +140,7 @@ public class MapFragment extends Fragment implements android.location.LocationLi
         super.onResume();
         mMapView.onResume();
     }
+
     //----------------------------------------------------------------------------------------------
     @Override
     public void onAttach(Context context) {
@@ -143,6 +152,7 @@ public class MapFragment extends Fragment implements android.location.LocationLi
                     + " must implement OnMapInteractionListener");
         }
     }
+
     //----------------------------------------------------------------------------------------------
     @Override
     public void onDetach() {
@@ -156,12 +166,14 @@ public class MapFragment extends Fragment implements android.location.LocationLi
         super.onPause();
         mMapView.onPause();
     }
+
     //----------------------------------------------------------------------------------------------
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
     }
+
     //----------------------------------------------------------------------------------------------
     @Override
     public void onLowMemory() {
@@ -209,25 +221,23 @@ public class MapFragment extends Fragment implements android.location.LocationLi
             googleMap.clear();
 
         addMarker(eventToShow.getAdmin(), BitmapDescriptorFactory.HUE_RED);
-        for(User u: eventToShow.getAttendees()){
-            if (u.getFbtokenid().equals(Profile.getCurrentProfile().getId()))
-            {
+        for (User u : eventToShow.getAttendees()) {
+            if (u.getFbtokenid().equals(Profile.getCurrentProfile().getId())) {
                 addMarker(u, BitmapDescriptorFactory.HUE_CYAN);
                 UserLocation loc = u.getRecentlocation();
                 LatLng latLng = new LatLng(loc.getLat(), loc.getLon());
                 changeStartDirectionString(latLng.latitude, latLng.longitude);
-            }else{
+            } else {
                 addMarker(u, BitmapDescriptorFactory.HUE_GREEN);
             }
         }
-        for (User u: eventToShow.getInvitations()){
-            if (u.getFbtokenid().equals(Profile.getCurrentProfile().getId()))
-            {
+        for (User u : eventToShow.getInvitations()) {
+            if (u.getFbtokenid().equals(Profile.getCurrentProfile().getId())) {
                 addMarker(u, BitmapDescriptorFactory.HUE_CYAN);
                 UserLocation loc = u.getRecentlocation();
                 LatLng latLng = new LatLng(loc.getLat(), loc.getLon());
                 changeStartDirectionString(latLng.latitude, latLng.longitude);
-            }else{
+            } else {
                 addMarker(u, BitmapDescriptorFactory.HUE_YELLOW);
             }
         }
@@ -239,7 +249,7 @@ public class MapFragment extends Fragment implements android.location.LocationLi
     public boolean onCurrentEventPlaceChanged(Place newPlace) {
         //Bug if random is chosen and the place has not changed then ruh uh
         MainEventRetainedFragment frag = mListener.getMainEventFragment();
-        if(frag != null && frag.getCurrentEvent()!= null){
+        if (frag != null && frag.getCurrentEvent() != null) {
             Event currentEvent = frag.getCurrentEvent();
             LatLng currentPlace = newPlace.getLatLng();
 
@@ -249,30 +259,31 @@ public class MapFragment extends Fragment implements android.location.LocationLi
                     .snippet(newPlace.getAddress().toString())
                     .title(newPlace.getName().toString()).icon(markerIcon);
             if (googleMap != null) {
-                Drawable iconDrawable;
-                switch(currentEvent.getCategory()){
+                int iconRID;
+                switch (currentEvent.getCategory()) {
                     case "Food":
-                        iconDrawable = getResources().getDrawable(R.drawable.ic_restaurant_black_24dp);
+                        iconRID = R.drawable.ic_restaurant_black_24dp;
                         break;
                     case "Play":
-                        iconDrawable = getResources().getDrawable(R.drawable.ic_grade_black_24dp);
+                        iconRID = R.drawable.ic_grade_black_24dp;
                         break;
                     case "SlapDash":
-                        iconDrawable = getResources().getDrawable(R.drawable.ic_casino_black_24dp);
+                        iconRID = R.drawable.ic_casino_black_24dp;
                         break;
                     case "Drink":
-                        iconDrawable = getResources().getDrawable(R.drawable.ic_local_bar_black_24dp);
+                        iconRID = R.drawable.ic_local_bar_black_24dp;
                         break;
                     default:
-                        iconDrawable = getResources().getDrawable(R.drawable.ic_grade_black_24dp);
+                        iconRID = R.drawable.ic_grade_black_24dp;
                         break;
                 }
+
+                Drawable iconDrawable = CompatibilityHelper.getDrawable(getActivity(), iconRID);
                 markerIcon = getMarkerIconFromDrawable(iconDrawable);
                 options.icon(markerIcon);
                 googleMap.addMarker(options);
             }
         }
-
         changeDestDirectionString(newPlace.getLatLng().latitude, newPlace.getLatLng().longitude);
         return true;
     }
@@ -284,20 +295,23 @@ public class MapFragment extends Fragment implements android.location.LocationLi
         return false;
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CUSTOM FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                  Public methods                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
+
     //----------------------------------------------------------------------------------------------
     /**
      * Clears GoogleMap of all markers that it current has, and reloads it with just the current
      * users location marker.
      */
-    public void reloadWithCurrentLocation()
-    {
+    public void reloadWithCurrentLocation() {
         googleMap.clear();
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -308,10 +322,12 @@ public class MapFragment extends Fragment implements android.location.LocationLi
                     MainActivity.getMY_PERMISSIONS_FINE_LOCATIONS());
         }
 
-        LocationManager locationManager = (LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) mContext
+                .getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
+
         String bestProvider = locationManager.getBestProvider(criteria, true);
-        if(bestProvider != null){
+        if (bestProvider != null) {
             Location location = locationManager.getLastKnownLocation(bestProvider);
             if (location != null) {
                 onLocationChanged(location);
@@ -327,7 +343,6 @@ public class MapFragment extends Fragment implements android.location.LocationLi
                         .defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 
                 // adding marker
-                //currentLocMarker = googleMap.addMarker(marker);
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude)).zoom(15).build();
                 googleMap.animateCamera(CameraUpdateFactory
@@ -337,50 +352,60 @@ public class MapFragment extends Fragment implements android.location.LocationLi
 
         MainEventRetainedFragment fragment = mListener.getMainEventFragment();
 
-        if(googleMap != null) {
-            if(fragment != null && fragment.getCurrentEvent()!= null) {
+        if (googleMap != null) {
+            if (fragment != null && fragment.getCurrentEvent() != null) {
                 onCurrentMainEventChanged(fragment.getCurrentEvent());
             } else {
                 mListener.OnCurrentEventRequested();
             }
         } else {
-
+            // TODO: Can we do any handling here?
         }
     }
 
-    //----------------------------------------------------------------------------------------------
-    private void addMarker(User user, float color){
-        if(user != null && user.getRecentlocation() != null){
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                    Interface                                            //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    public interface OnMapFragmentInteractionListener {
+        MainEventRetainedFragment getMainEventFragment();
+
+        void OnCurrentEventRequested();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                 Private Members                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void addMarker(User user, float color) {
+        if (user != null && user.getRecentlocation() != null) {
             UserLocation loc = user.getRecentlocation();
             LatLng latLng = new LatLng(loc.getLat(), loc.getLon());
             MarkerOptions marker;
-            if (user.getFbtokenid().equals(Profile.getCurrentProfile().getId()))
-            {
+            if (user.getFbtokenid().equals(Profile.getCurrentProfile().getId())) {
                 marker = new MarkerOptions().position(latLng).title("You");
-            }else{
+            } else {
                 marker = new MarkerOptions().position(latLng).title(user.getFullName());
             }
 
             marker.icon(BitmapDescriptorFactory
-                        .defaultMarker(color));
+                    .defaultMarker(color));
 
             // adding marker
-            if(googleMap != null) {
+            if (googleMap != null) {
                 googleMap.addMarker(marker);
             }
         }
     }
 
     //----------------------------------------------------------------------------------------------
-    public interface OnMapFragmentInteractionListener {
-        MainEventRetainedFragment getMainEventFragment();
-        void OnCurrentEventRequested();
-    }
-
-    //----------------------------------------------------------------------------------------------
     private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
         Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
         canvas.setBitmap(bitmap);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         drawable.draw(canvas);

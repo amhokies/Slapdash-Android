@@ -1,28 +1,22 @@
 package com.virginiatech.slapdash.slapdash.EventList_Fragment;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
 import com.virginiatech.slapdash.slapdash.MainActivity;
 import com.virginiatech.slapdash.slapdash.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -72,12 +66,9 @@ public class EventListFragment extends Fragment {
         View createdView = inflater.inflate(R.layout.fragment_event_list, container, false);
 
         eventListView = (ListView) createdView.findViewById(R.id.friend_list_view);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            eventListView.setDivider(getResources().getDrawable(R.drawable.event_list_divider,
-                    getActivity().getTheme()));
-        } else {
-            eventListView.setDivider(getResources().getDrawable(R.drawable.event_list_divider));
-        }
+        eventListView.setDivider(CompatibilityHelper.getDrawable(getActivity(),
+                R.drawable.event_list_divider));
+
 
         eventListView.setAdapter(adapter);
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

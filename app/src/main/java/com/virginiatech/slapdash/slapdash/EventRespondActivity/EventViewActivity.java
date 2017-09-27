@@ -24,10 +24,10 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.virginiatech.slapdash.slapdash.Map_Fragment.EventType.DRINK;
-import static com.virginiatech.slapdash.slapdash.Map_Fragment.EventType.FOOD;
-import static com.virginiatech.slapdash.slapdash.Map_Fragment.EventType.PLAY;
-import static com.virginiatech.slapdash.slapdash.Map_Fragment.EventType.RANDOM;
+import static com.virginiatech.slapdash.slapdash.DataModelClasses.EventType.DRINK;
+import static com.virginiatech.slapdash.slapdash.DataModelClasses.EventType.FOOD;
+import static com.virginiatech.slapdash.slapdash.DataModelClasses.EventType.PLAY;
+import static com.virginiatech.slapdash.slapdash.DataModelClasses.EventType.RANDOM;
 
 public class EventViewActivity extends AppCompatActivity {
 

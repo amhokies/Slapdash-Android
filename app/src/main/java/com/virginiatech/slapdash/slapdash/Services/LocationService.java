@@ -12,10 +12,14 @@ import com.virginiatech.slapdash.slapdash.DataModelClasses.UserLocation;
 
 /**
  * Created by nima on 12/5/16.
+ * <p>
+ * Delegate the task of getting the user location to this class.
+ * This function was used in many places therefore was made as a
+ * service.
  */
 
 public class LocationService {
-    public static  UserLocation getRecentLocation(Context context, LocationManager locationManager) {
+    public static UserLocation getRecentLocation(Context context, LocationManager locationManager) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             Criteria criteria = new Criteria();

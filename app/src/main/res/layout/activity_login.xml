@@ -2,21 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/light_grey"
     >
 
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher"/>
+
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/info"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:textSize="18sp"
+        android:visibility="gone"
         />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp"
         />
 </RelativeLayout>

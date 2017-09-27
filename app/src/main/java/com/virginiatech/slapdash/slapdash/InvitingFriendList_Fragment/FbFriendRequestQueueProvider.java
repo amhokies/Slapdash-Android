@@ -20,6 +20,7 @@ public class FbFriendRequestQueueProvider {
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
+    //-------------------------------------------------------------------------------------------
     private FbFriendRequestQueueProvider(final Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
@@ -41,6 +42,7 @@ public class FbFriendRequestQueueProvider {
                 });
     }
 
+    //-------------------------------------------------------------------------------------------
     public static synchronized FbFriendRequestQueueProvider getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new FbFriendRequestQueueProvider(context);
@@ -48,6 +50,7 @@ public class FbFriendRequestQueueProvider {
         return mInstance;
     }
 
+    //-------------------------------------------------------------------------------------------
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
@@ -57,10 +60,12 @@ public class FbFriendRequestQueueProvider {
         return mRequestQueue;
     }
 
+    //-------------------------------------------------------------------------------------------
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
 
+    //-------------------------------------------------------------------------------------------
     public ImageLoader getImageLoader() {
         return mImageLoader;
     }

@@ -38,13 +38,17 @@ public class FbFriendFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyFbFriendRecyclerViewAdapter adapter;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                 Public Methods                                          //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FbFriendFragment() {
-    }
+    public FbFriendFragment() {}
 
+    //-------------------------------------------------------------------------------------------
     public static FbFriendFragment newInstance(int columnCount) {
         FbFriendFragment fragment = new FbFriendFragment();
         Bundle args = new Bundle();
@@ -53,77 +57,15 @@ public class FbFriendFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fbfriend_list, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            ArrayList<Friend> friendList = new ArrayList<>();
-            adapter = new MyFbFriendRecyclerViewAdapter(friendList, mListener,
-                    getActivity().getApplicationContext());
-            recyclerView.setAdapter(adapter);
-        }
-        populateFriendsList();
-        mListener.OnFbFriendFragmentCreated();
-        return view;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
+    //-------------------------------------------------------------------------------------------
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     *  The Logic to get the list of friends from facebook
      */
-    public interface OnListFragmentInteractionListener {
-        void OnFbFriendFragmentCreated();
-        void OnInvitedFriendButtonClicked(String friendId);
-        void OnUninvitedFriendButtonClicked(String friendId);
-    }
-
-    /* The Logic to get the list of friends from facebook */
     public String getCurrentUserID() {
         return Profile.getCurrentProfile().getId();
     }
 
+    //-------------------------------------------------------------------------------------------
     public void populateFriendsList() {
         Bundle param = new Bundle();
         param.putString("fields", "id,name");
@@ -159,5 +101,71 @@ public class FbFriendFragment extends Fragment {
                 HttpMethod.GET,
                 callback
         ).executeAsync();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                     Interface                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    public interface OnListFragmentInteractionListener {
+        void OnFbFriendFragmentCreated();
+        void OnInvitedFriendButtonClicked(String friendId);
+        void OnUninvitedFriendButtonClicked(String friendId);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                     Overrides                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_fbfriend_list, container, false);
+
+        // Set the adapter
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            recyclerView = (RecyclerView) view;
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            }
+            ArrayList<Friend> friendList = new ArrayList<>();
+            adapter = new MyFbFriendRecyclerViewAdapter(friendList, mListener,
+                    getActivity().getApplicationContext());
+            recyclerView.setAdapter(adapter);
+        }
+        populateFriendsList();
+        mListener.OnFbFriendFragmentCreated();
+        return view;
+    }
+
+    //-------------------------------------------------------------------------------------------
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 }

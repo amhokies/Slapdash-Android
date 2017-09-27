@@ -1,10 +1,11 @@
-package com.virginiatech.slapdash.slapdash;
+package com.virginiatech.slapdash.slapdash.DataModelClasses;
 
 /**
  * Created by nima on 10/3/16.
+ *
+ * Reperesents Different permission type an event could have.
  */
-
-public enum PermissionType {
+enum PermissionType {
     OPEN,
     CLOSED,
     APPROVAL;

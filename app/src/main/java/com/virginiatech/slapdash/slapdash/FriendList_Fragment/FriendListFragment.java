@@ -8,49 +8,59 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
-import com.virginiatech.slapdash.slapdash.EventList_Fragment.EventListFragment;
+import com.virginiatech.slapdash.slapdash.DataModelClasses.User;
 import com.virginiatech.slapdash.slapdash.MainActivity;
 import com.virginiatech.slapdash.slapdash.MainActivityFragmentsInterface;
 import com.virginiatech.slapdash.slapdash.R;
-import com.virginiatech.slapdash.slapdash.DataModelClasses.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 
-public class FriendListFragment extends Fragment implements MainActivityFragmentsInterface{
+public class FriendListFragment extends Fragment implements MainActivityFragmentsInterface {
     @Getter
     private ListView friendListView;
     private FriendListAdapter adapter;
-    private Button btnEvent;
-    private static EventListFragment eventsFragment;
+    private OnFragmentInteractionListener mListener;
     public static final String EVENT_FRAGMENT_TAG = "EVENTFRAGMENT";
 
-    private OnFragmentInteractionListener mListener;
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                 Public Methods                                          //
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
     public FriendListFragment() {
         // Required empty public constructor
     }
 
+    //--------------------------------------------------------------------------------------------
     public static FriendListFragment newInstance() {
-        FriendListFragment fragment = new FriendListFragment();
-        return fragment;
+        return new FriendListFragment();
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                    Interface                                            //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    public interface OnFragmentInteractionListener {
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                     Overrides                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new FriendListAdapter(this.getContext(), new ArrayList<User>());
     }
 
+    //--------------------------------------------------------------------------------------------
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +68,7 @@ public class FriendListFragment extends Fragment implements MainActivityFragment
 
         friendListView = (ListView) createdView.findViewById(R.id.friend_list_view);
 
-        friendListView.setOnScrollListener(new AbsListView.OnScrollListener(){
+        friendListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView,
                                              int scrollState) { /* Intentionally empty */ }
@@ -73,33 +83,11 @@ public class FriendListFragment extends Fragment implements MainActivityFragment
         });
         friendListView.getFirstVisiblePosition();
         friendListView.setAdapter(adapter);
-        friendListView.setDivider(null); /*
-        btnEvent = (Button) createdView.findViewById(R.id.btnEvent);
-        btnEvent.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                eventsFragment = (EventListFragment)
-                        getFragmentManager().findFragmentByTag(EVENT_FRAGMENT_TAG);
-
-                if(eventsFragment == null) {
-                    eventsFragment = EventListFragment.newInstance();
-                }
-
-                getFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.event_list_bottom_up,
-                                R.anim.event_list_bottom_up)
-                        .replace(R.id.main_activity_container,
-                                eventsFragment,
-                                EVENT_FRAGMENT_TAG)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });*/
+        friendListView.setDivider(null);
         return createdView;
     }
 
+    //--------------------------------------------------------------------------------------------
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -111,16 +99,14 @@ public class FriendListFragment extends Fragment implements MainActivityFragment
         }
     }
 
+    //--------------------------------------------------------------------------------------------
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-
-    }
-
+    //--------------------------------------------------------------------------------------------
     @Override
     public boolean onCurrentMainEventChanged(Event newCurrentEvent) {
         adapter.clear();
@@ -130,41 +116,51 @@ public class FriendListFragment extends Fragment implements MainActivityFragment
         return true;
     }
 
+    //--------------------------------------------------------------------------------------------
     @Override
     public boolean onCurrentEventPlaceChanged(Place newPlace) {
         return false;
     }
 
+    //--------------------------------------------------------------------------------------------
     @Override
-    public boolean onCurrentEventPictureChanged(PlacePhotoMetadataBuffer buffer, GoogleApiClient mGoogleApiClient) {
+    public boolean onCurrentEventPictureChanged(PlacePhotoMetadataBuffer buffer,
+                                                GoogleApiClient mGoogleApiClient) {
         return false;
     }
 
-    private void addAdmin(User admin){
-        if(admin == null) return;
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                Private Methods                                          //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void addAdmin(User admin) {
+        if (admin == null) return;
         admin.setStatus(User.InvitationStatus.ADMIN);
         adapter.add(admin);
     }
 
-    private void addAttended(List<User> attendees){
-        if(attendees == null) return;
-        for(User user : attendees){
+    //--------------------------------------------------------------------------------------------
+    private void addAttended(List<User> attendees) {
+        if (attendees == null) return;
+        for (User user : attendees) {
             user.setStatus(User.InvitationStatus.GOING);
             adapter.add(user);
         }
     }
 
-    private void addInvited(List<User> invitees){
-        if(invitees == null) return;
-        for(User user : invitees){
+    //--------------------------------------------------------------------------------------------
+    private void addInvited(List<User> invitees) {
+        if (invitees == null) return;
+        for (User user : invitees) {
             user.setStatus(User.InvitationStatus.PENDING);
             adapter.add(user);
         }
     }
 
-    private void addDeclined(List<User> declinedList){
-        if(declinedList == null) return;
-        for (User user: declinedList){
+    //--------------------------------------------------------------------------------------------
+    private void addDeclined(List<User> declinedList) {
+        if (declinedList == null) return;
+        for (User user : declinedList) {
             user.setStatus(User.InvitationStatus.NOTGOING);
             adapter.add(user);
         }

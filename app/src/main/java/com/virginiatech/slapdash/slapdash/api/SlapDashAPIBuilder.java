@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SlapDashAPIBuilder {
 
     @Getter
-    private static final String SLAPDASH_BASE_URL = "https://amhokies.me/api/v1/";
+    private static final String SLAPDASH_BASE_URL = "https://nimayz.click/slapdash/api/v1/";
 
     public static SlapDashAPI getAPI() {
 

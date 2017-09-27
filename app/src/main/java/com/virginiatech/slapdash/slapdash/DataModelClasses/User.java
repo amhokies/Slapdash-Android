@@ -46,7 +46,11 @@ public class User implements Serializable {
     public String getFullName() {
         if(name == null)
             return null;
-        return name.firstname + " " + name.lastname;
+
+        String fullName = name.firstname != null ? name.firstname : "";
+        fullName += " ";
+        fullName += name.lastname != null ? name.lastname : "";
+        return fullName;
     }
 
     public User(){}

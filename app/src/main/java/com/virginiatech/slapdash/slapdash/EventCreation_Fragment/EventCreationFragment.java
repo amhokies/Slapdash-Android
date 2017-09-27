@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
 import com.virginiatech.slapdash.slapdash.EventCreationActivity.EventCreationActivity;
 import com.virginiatech.slapdash.slapdash.MainActivity;
-import com.virginiatech.slapdash.slapdash.Map_Fragment.EventType;
+import com.virginiatech.slapdash.slapdash.DataModelClasses.EventType;
 import com.virginiatech.slapdash.slapdash.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;

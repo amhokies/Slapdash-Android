@@ -53,9 +53,6 @@ public class FireBaseService extends FirebaseInstanceIdService {
         User toBeUpdated = new User();
         toBeUpdated.setAndroidregid(fcmToken);
 
-        Log.d(TAG, "User to be updated: " + toBeUpdated.toString());
-        Log.d(TAG, "fbAcessToken: " + fbAccessToken.toString());
-
         Call<User> call = service.updateUser(userId, fbAccessToken.toString(), toBeUpdated);
 
         call.enqueue(new Callback<User>(){

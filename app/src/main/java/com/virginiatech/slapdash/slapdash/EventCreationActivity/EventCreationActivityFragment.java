@@ -4,11 +4,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,9 +23,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 
-import com.virginiatech.slapdash.slapdash.DataModelClasses.Event;
+import com.virginiatech.slapdash.slapdash.HelperClasses.CompatibilityHelper;
 import com.virginiatech.slapdash.slapdash.InvitingFriendList_Fragment.FbFriendFragment;
-import com.virginiatech.slapdash.slapdash.OnSwipeTouchListener;
 import com.virginiatech.slapdash.slapdash.R;
 
 import java.util.ArrayList;
@@ -250,15 +247,13 @@ public class EventCreationActivityFragment extends Fragment {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
             cal = Calendar.getInstance();
-            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
+            cal.set(cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH),
+                    hourOfDay,
+                    minute);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                startTimePicker.setHour(hourOfDay);
-                startTimePicker.setMinute(minute);
-            } else {
-                startTimePicker.setCurrentHour(hourOfDay);
-                startTimePicker.setCurrentMinute(minute);
-            }
+            CompatibilityHelper.setTime(view, hourOfDay, minute);
             mListener.OnEventStartTimeChanged(cal.getTime());
         }
     }

@@ -15,12 +15,14 @@ import android.util.AttributeSet;
 
 import com.android.volley.toolbox.NetworkImageView;
 
-public class RoundedImageView extends NetworkImageView{
-
+public class RoundedImageView extends NetworkImageView {
     public RoundedImageView(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                       Overrides                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -34,7 +36,7 @@ public class RoundedImageView extends NetworkImageView{
             return;
         }
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        if(b != null) {
+        if (b != null) {
             Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
             int w = getWidth(), h = getHeight();
 
@@ -43,7 +45,10 @@ public class RoundedImageView extends NetworkImageView{
         }
     }
 
-    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    //                                 Private Methods                                         //
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    private static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
         Bitmap finalBitmap;
         if (bitmap.getWidth() != radius || bitmap.getHeight() != radius)
             finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius,
@@ -71,5 +76,4 @@ public class RoundedImageView extends NetworkImageView{
 
         return output;
     }
-
 }
